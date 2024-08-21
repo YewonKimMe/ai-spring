@@ -13,6 +13,7 @@ import dev.langchain4j.model.openai.OpenAiChatModel;
 import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
 import dev.langchain4j.model.output.Response;
 import dev.langchain4j.service.AiServices;
+import dev.langchain4j.service.TokenStream;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Sinks;
 
 import java.io.IOException;
 import java.util.concurrent.Executors;
@@ -66,51 +69,71 @@ public class AiController {
     }
 
     @GetMapping("/streaming")
-    public ResponseBodyEmitter getMessageStreamingResult(@RequestBody DefaultChatMessage defaultChatMessage) {
+    public Flux<String> getMessageStreamingResult(@RequestBody DefaultChatMessage defaultChatMessage) {
 
-        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+        Sinks.Many<String> sink = Sinks.many().unicast().onBackpressureBuffer();
 
-        StreamingChatLanguageModel model = OpenAiStreamingChatModel.withApiKey(apiKey);
-        String userMessage = defaultChatMessage.getMessage();
+        ChatMemory chatMemory = MessageWindowChatMemory.withMaxMessages(10);
 
-        // 비동기적으로 스트리밍 데이터 생성
-        Executors.newSingleThreadExecutor().submit(() -> {
-            try {
-                model.generate(requirement + userMessage, new StreamingResponseHandler<AiMessage>() {
+        Assistant assistant = AiServices.builder(Assistant.class)
+                .chatLanguageModel(OpenAiChatModel.builder()
+                        .apiKey(apiKey)
+                        .modelName("gpt-4")
+                        .temperature(0.01)
+                        .build())
+                .chatMemory(chatMemory)
+                .streamingChatLanguageModel(OpenAiStreamingChatModel.withApiKey(apiKey))
+                .build();
 
-                    @Override
-                    public void onNext(String token) {
-                        try {
-                            // 클라이언트에게 전송할 데이터
-                            emitter.send(token);
-                            //System.out.println("onNext: " + token);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onComplete(Response<AiMessage> response) {
-                        try {
-                            emitter.complete();
-                            //System.out.println("onComplete: " + response);
-                        } catch (Exception e) {
-                            emitter.completeWithError(e);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable error) {
-                        emitter.completeWithError(error);
-                        //error.printStackTrace();
-                    }
-                });
-            } catch (Exception ex) {
-                emitter.completeWithError(ex);
-            }
-        });
-
-        return emitter;
+        TokenStream tokenStream = assistant.chatStream(defaultChatMessage.getMessage());
+        tokenStream
+                .onNext(sink::tryEmitNext)
+                .onError(sink::tryEmitError)
+                .start();
+        return sink.asFlux();
+//        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
+//
+//        StreamingChatLanguageModel model = OpenAiStreamingChatModel.withApiKey(apiKey);
+//        String userMessage = defaultChatMessage.getMessage();
+//
+//        // 비동기적으로 스트리밍 데이터 생성
+//        Executors.newSingleThreadExecutor().submit(() -> {
+//            try {
+//                model.generate(requirement + userMessage, new StreamingResponseHandler<AiMessage>() {
+//
+//                    @Override
+//                    public void onNext(String token) {
+//                        try {
+//                            // 클라이언트에게 전송할 데이터
+//                            emitter.send(token);
+//                            //System.out.println("onNext: " + token);
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onComplete(Response<AiMessage> response) {
+//                        try {
+//                            emitter.complete();
+//                            //System.out.println("onComplete: " + response);
+//                        } catch (Exception e) {
+//                            emitter.completeWithError(e);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable error) {
+//                        emitter.completeWithError(error);
+//                        //error.printStackTrace();
+//                    }
+//                });
+//            } catch (Exception ex) {
+//                emitter.completeWithError(ex);
+//            }
+//        });
+//
+//        return emitter;
     }
 
 }
