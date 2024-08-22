@@ -40,6 +40,7 @@ public class AiController {
     String apiKey;
 
     private final OcrService ocrService;
+    // Assistant 로 프롬프트 이동
 
 //    final String requirement = "다음 계약서에 대한 평가를 수행해 주세요.\n" +
 //            "기준:\n" +
