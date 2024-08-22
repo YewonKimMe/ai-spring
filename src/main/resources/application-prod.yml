@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: AiProject
+  lang-chain:
+    open-ai:
+      api-key: ${API_KEY}
+  datasource:
+    url: ${DB_URL}    # db response name
+    username: ${DB_USERNAME}
+    # db response password
+    password: ${DB_PASSWORD}
