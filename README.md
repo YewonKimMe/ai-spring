@@ -46,3 +46,9 @@ String generatedMessage = Assistant.chat(convertedTxt);
 
 > 마지막에 @{1항 평가 점수;2항 평가 점수;3항 평가 점수;4항 평가 점수;5항 평가 점수} 으로 데이터 들어감
 split('@')[1] 으로 {점수 리스트} 획득 가능
+
+---
+### 의존성
+https://mvnrepository.com/artifact/net.sourceforge.tess4j/tess4j/5.13.0 tess4j(ocr)
+https://mvnrepository.com/artifact/dev.langchain4j/langchain4j langchain4j
+https://mvnrepository.com/artifact/dev.langchain4j/langchain4j-open-ai langchain4j-openai
