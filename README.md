@@ -18,8 +18,8 @@
     * 응답 텍스트를 프롬프트로 일정하게 요청하긴 했으나, 이 부분은 수정이 필요함
     * 단순히 텍스트 기반으로 통째로 출력하는 것이 목적이라면 중요하진 않음
   * ⚙️ 현재 추가된 기능
-    * 단순 text 기반 계약서 분석 응답
-    * 여러장 계약서 이미지 업로드, OCR 추출 후 분석 응답
+    * 단순 text 기반 계약서 분석 응답: gpt-3.5 turbo
+    * 여러장 계약서 이미지 업로드, OCR 추출 후 분석 응답: gpt-4o-mini
       * tessdata 기반 kor(한국어), osd(광학 문자 인식)
       * 오픈소스여서 한국어 인식률이 조금 부족한 경향을 보임
       * 중국어 번체(한자) 학습 데이터(chi_tra)를 추가하려고 했으나 한글로 쓰여진 한자어(e.g. 성명) 같은 것도 한문으로 번역하는 문제 발생, 따라서 중국어는 추가하지 않음
@@ -43,4 +43,4 @@ String generatedMessage = Assistant.chat(convertedTxt);
 
 ## 응답 테스트 예시
 ### POSTMAN
-<img src="src/main/resources/static/test.png">
+<img src="src/main/resources/static/test.png" alt="포스트맨 테스트">
