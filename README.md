@@ -1,8 +1,6 @@
-##### <img src="src/main/resources/static/openai.png" width="120" height="30" style="margin-right: 20px;"><img src="src/main/resources/static/aws.png" width="40" height="28"> 
+<img src="src/main/resources/static/openai.png" width="120" height="30" style="margin-right: 50px;"><img src="src/main/resources/static/aws.png" width="45" height="28">
 
 # GenAI 기반 계약서 인식·평가 서비스 / ART 해커톤 2팀
-
----
 
 ## 오픈소스 기반 OCR 라이브러리-Tesseract(tess4j) 이용
 
@@ -25,8 +23,8 @@
       * 오픈소스여서 한국어 인식률이 조금 부족한 경향을 보임
       * 중국어 번체(한자) 학습 데이터(chi_tra)를 추가하려고 했으나 한글로 쓰여진 한자어(e.g. 성명) 같은 것도 한문으로 번역하는 문제 발생, 따라서 중국어는 추가하지 않음
 
-   
-    
+
+
 
 - 스트리밍 응답 추가 예정 (좀 오래 걸릴것으로 예상)
 
