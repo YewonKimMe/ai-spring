@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -32,6 +33,22 @@ public class Tess4jService implements OcrService {
         } catch (TesseractException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String doImagesOcr(List<MultipartFile> files) {
+
+        StringBuilder sb = new StringBuilder();
+
+        for (MultipartFile file : files) {
+            BufferedImage bufferedImage = convertMultipartFileToBufferedImage(file);
+            try {
+                String ocrTxt = tesseract.doOCR(bufferedImage);
+                sb.append(ocrTxt);
+            } catch (TesseractException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return sb.toString();
     }
 
     private Tesseract setTesseract() {
