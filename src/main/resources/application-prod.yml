@@ -1,11 +1,15 @@
 spring:
   application:
     name: AiProject
+  # LANGCHAIN
   lang-chain:
     open-ai:
+      # OPEN-AI API-KEY
       api-key: ${API_KEY}
   datasource:
-    url: ${DB_URL}    # db response name
+    # DB URL
+    url: ${DB_URL}
+    # DB USERNAME
     username: ${DB_USERNAME}
-    # db response password
+    # DB PASSWORD
     password: ${DB_PASSWORD}
