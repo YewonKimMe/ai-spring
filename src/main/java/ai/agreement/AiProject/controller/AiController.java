@@ -44,6 +44,8 @@ public class AiController {
     String apiKey;
 
     private final OcrService ocrService;
+
+    private final Assistant assistant;
     // Assistant 로 프롬프트 이동
 
 //    final String requirement = "다음 계약서에 대한 평가를 수행해 주세요.\n" +
@@ -81,16 +83,6 @@ public class AiController {
     @PostMapping("/chat")
     public ResponseEntity<ResultAndData> getDefaultChat(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "텍스트 계약서") @RequestBody DefaultChatMessage defaultChatMessage) {
 
-        ChatMemory chatMemory = MessageWindowChatMemory.withMaxMessages(10);
-
-        Assistant assistant = AiServices.builder(Assistant.class)
-                .chatLanguageModel(OpenAiChatModel.builder()
-                        .apiKey(apiKey)
-                        .modelName("gpt-3.5-turbo")
-                        .temperature(0.01)
-                        .build())
-                .chatMemory(chatMemory)
-                .build();
         String generatedMessage = assistant.chat("계약서 내용: "+defaultChatMessage.getMessage());
         log.debug("gen message={}", generatedMessage);
         return ResponseEntity
@@ -102,8 +94,6 @@ public class AiController {
     @Operation(summary = "계약서 이미지 OCR 후 응답", description = "gpt-4o, 이미지 ocr 처리 후 기반으로 정해진 양식에 따라 gpt 응답, 이미지 여러장 OCR 추출 가능<br>스트리밍 구현이 완료되지 않았기 때문에 10~20초의 응답지연이 있을 수 있음")
     @PostMapping(value = "/chat/agreement-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResultAndData> getOcrString(@RequestPart(name = "images") List<MultipartFile> files) {
-
-        Assistant assistant = this.setAssistant("gpt-4o-mini");
 
         String OcrAgreementText = ocrService.doImagesOcr(files);
 
