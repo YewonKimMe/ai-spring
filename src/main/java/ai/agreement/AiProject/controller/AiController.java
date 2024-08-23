@@ -15,6 +15,8 @@ import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
 import dev.langchain4j.model.output.Response;
 import dev.langchain4j.service.AiServices;
 import dev.langchain4j.service.TokenStream;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,11 +30,13 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.Executors;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Chatbot endpoint", description = "챗봇 관련 기능")
 @RequestMapping(value = "/api/chat", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AiController {
 
@@ -62,8 +66,9 @@ public class AiController {
 //            "총평: {총평 내용}\n" +
 //            "@{1항 평가 점수;2항 평가 점수;3항 평가 점수;4항 평가 점수;5항 평가 점수}";
 
-    @GetMapping
-    public ResponseEntity<ResultAndData> getDefaultChat(@RequestBody DefaultChatMessage defaultChatMessage) {
+    @Operation(summary = "단순 텍스트 기반 계약서 input 응답", description = "gpt-3.5, text input에 대한 gpt 응답<br>스트리밍 구현이 완료되지 않았기 때문에 10~20초의 응답지연이 있을 수 있음")
+    @PostMapping
+    public ResponseEntity<ResultAndData> getDefaultChat(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "텍스트 계약서") @RequestBody DefaultChatMessage defaultChatMessage) {
 
         ChatMemory chatMemory = MessageWindowChatMemory.withMaxMessages(10);
 
@@ -83,16 +88,19 @@ public class AiController {
 
     }
 
-    @GetMapping("/agreement-image")
-    public ResponseEntity<String> getOcrString(@RequestPart(name = "image") MultipartFile file) {
+    @Operation(summary = "계약서 이미지 OCR 후 응답", description = "gpt-4o, 이미지 ocr 처리 후 기반으로 정해진 양식에 따라 gpt 응답, 이미지 여러장 OCR 추출 가능<br>스트리밍 구현이 완료되지 않았기 때문에 10~20초의 응답지연이 있을 수 있음")
+    @PostMapping(value = "/agreement-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResultAndData> getOcrString(@RequestPart(name = "images") List<MultipartFile> files) {
 
         Assistant assistant = this.setAssistant("gpt-4o-mini");
 
-        String convertedString = ocrService.doImageOcr(file);
-        String generatedMessage = assistant.chat("계약서 OCR 내용: " + convertedString);
+        String OcrAgreementText = ocrService.doImagesOcr(files);
+
+        String generatedMessage = assistant.chat("계약서 OCR 내용: " + OcrAgreementText);
+
         return ResponseEntity.
                 ok()
-                .body(generatedMessage);
+                .body(new SuccessAndData(HttpStatus.OK.getReasonPhrase(), generatedMessage));
     }
 
     private Assistant setAssistant(String modelName) {
