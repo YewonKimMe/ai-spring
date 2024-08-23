@@ -7,8 +7,8 @@
 ## 오픈소스 기반 OCR 라이브러리-Tesseract(tess4j) 이용
 
 ### 추후에 Google OCR 서비스 or Amazon Textract로 바꿀 수도 있음
-
-    API 문서 주소: http://<EC2 엔드포인트 주소-ip 또는 url>:8080/swagger-ui/index.html
+#### API 문서 주소:
+    http://<EC2 엔드포인트 주소-ip 또는 url>:8080/swagger-ui/index.html
 #### 위 주소에서 API 테스트 가능
 
 ---
