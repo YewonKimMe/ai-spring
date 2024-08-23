@@ -6,6 +6,8 @@ spring:
     open-ai:
       # OPEN-AI API-KEY
       api-key: ${API_KEY}
+      # OPEN-AI MODEL-NAME
+      model-name: ${MODEL_NAME}
   datasource:
     # DB URL
     url: ${DB_URL}
