@@ -43,3 +43,6 @@ String generatedMessage = Assistant.chat(convertedTxt);
 ## 응답 테스트 예시
 ### POSTMAN
 <img src="src/main/resources/static/test.png" alt="포스트맨 테스트">
+
+> 마지막에 @{1항 평가 점수;2항 평가 점수;3항 평가 점수;4항 평가 점수;5항 평가 점수} 으로 데이터 들어감
+split('@')[1] 으로 {점수 리스트} 획득 가능
