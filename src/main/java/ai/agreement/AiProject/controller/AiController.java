@@ -66,7 +66,18 @@ public class AiController {
 //            "총평: {총평 내용}\n" +
 //            "@{1항 평가 점수;2항 평가 점수;3항 평가 점수;4항 평가 점수;5항 평가 점수}";
 
-    @Operation(summary = "단순 텍스트 기반 계약서 input 응답", description = "gpt-3.5, text input에 대한 gpt 응답<br>스트리밍 구현이 완료되지 않았기 때문에 10~20초의 응답지연이 있을 수 있음")
+    @Operation(summary = "OCR 결과 확인 API", description = "OCR 테스트 API, 스트리밍을 지원하지 않기 때문에 수 초 내의 응답지연이 있을 수 있음")
+    @PostMapping(value = "/test/ocr-test", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResultAndData> getOcrText(@RequestPart(name = "images") List<MultipartFile> files) {
+
+        String OcrAgreementText = ocrService.doImagesOcr(files);
+
+        return ResponseEntity.
+                ok()
+                .body(new SuccessAndData(HttpStatus.OK.getReasonPhrase(), OcrAgreementText));
+    }
+
+    @Operation(summary = "단순 텍스트 기반 계약서에 대한 GenAI 분석", description = "gpt-3.5, text input에 대한 gpt 응답<br>스트리밍 구현이 완료되지 않았기 때문에 10~20초의 응답지연이 있을 수 있음")
     @PostMapping
     public ResponseEntity<ResultAndData> getDefaultChat(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "텍스트 계약서") @RequestBody DefaultChatMessage defaultChatMessage) {
 
