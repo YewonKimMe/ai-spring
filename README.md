@@ -1,4 +1,5 @@
-# <img src="src/main/resources/static/openai.svg" width="30" height="30"> <img src="src/main/resources/static/aws.png" width="40" height="28"> GenAI 기반 계약서 인식/평가 서비스 / ART 해커톤 2팀
+# <img src="src/main/resources/static/openai.svg" width="30" height="30"> <img src="src/main/resources/static/aws.png" width="40" height="28"> 
+# GenAI 기반 계약서 인식/평가 서비스 / ART 해커톤 2팀
 
 ---
 
