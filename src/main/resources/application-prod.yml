@@ -15,3 +15,4 @@ spring:
     username: ${DB_USERNAME}
     # DB PASSWORD
     password: ${DB_PASSWORD}
+  tessdata: ${TESSDATA_PREFIX}
