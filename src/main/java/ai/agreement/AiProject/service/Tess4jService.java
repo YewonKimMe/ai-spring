@@ -11,7 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 
 @Slf4j
@@ -53,7 +55,13 @@ public class Tess4jService implements OcrService {
 
     private Tesseract setTesseract() {
         Tesseract tesseract = new Tesseract();
-        tesseract.setDatapath("src/main/resources/tessdata"); //** 학습된데이터가 있는 폴더를 지정해준다.
+        try {
+            File tessdataDir = new File(Tess4jService.class.getClassLoader().getResource("tessdata").toURI());
+            tesseract.setDatapath(tessdataDir.getAbsolutePath()); // 학습된 데이터가 있는 폴더를 지정
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+
         tesseract.setLanguage("kor"); // 언어설정
         tesseract.setPageSegMode(1); // 페이지 모드 설정
         tesseract.setOcrEngineMode(1);
