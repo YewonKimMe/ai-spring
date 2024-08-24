@@ -14,6 +14,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.List;
 
 @Slf4j
@@ -56,10 +57,24 @@ public class Tess4jService implements OcrService {
     private Tesseract setTesseract() {
         Tesseract tesseract = new Tesseract();
         try {
-            File tessdataDir = new File(Tess4jService.class.getClassLoader().getResource("tessdata").toURI());
-            tesseract.setDatapath(tessdataDir.getAbsolutePath()); // 학습된 데이터가 있는 폴더를 지정
+            // 자원 URL을 가져와서 File 객체를 생성하는 대신
+            URL tessdataUrl = Tess4jService.class.getClassLoader().getResource("tessdata");
+            if (tessdataUrl == null) {
+                throw new RuntimeException("Tessdata resource not found.");
+            }
+
+            // URL에서 경로를 가져오고 이를 File로 변환
+            File tessdataDir = new File(tessdataUrl.toURI());
+            if (!tessdataDir.exists() || !tessdataDir.isDirectory()) {
+                throw new RuntimeException("Tessdata directory not found or not a directory.");
+            }
+
+            // Tesseract의 데이터 경로 설정
+            tesseract.setDatapath(tessdataDir.getAbsolutePath());
         } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error converting URL to URI", e);
+        } catch (Exception e) {
+            throw new RuntimeException("Error setting up Tesseract", e);
         }
 
         tesseract.setLanguage("kor"); // 언어설정
