@@ -20,7 +20,7 @@ public class GoogleVisionOcrService implements OcrService {
     @Override
     public String doImageOcr(MultipartFile file) {
 
-        log.info("environment key={}", System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
+        log.debug("environment key={}", System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
 
         try (ImageAnnotatorClient vision = ImageAnnotatorClient.create()) {
 
@@ -60,7 +60,7 @@ public class GoogleVisionOcrService implements OcrService {
     @Override
     public String doImagesOcr(List<MultipartFile> files) {
 
-        log.info("environment key={}", System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
+        log.debug("environment key={}", System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
 
         for (MultipartFile file : files) {
             String fileName = file.getOriginalFilename();
