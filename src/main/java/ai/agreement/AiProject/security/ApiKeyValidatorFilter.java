@@ -5,8 +5,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Component;
@@ -33,8 +33,8 @@ public class ApiKeyValidatorFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } else {
             log.error("Unauthorized API key={}", apiKey);
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            throw new BadRequestException("Unauthorized API key");
+            request.setAttribute("exception", new BadCredentialsException("유효하지 않은 인증 정보(API KEY) 입니다."));
+            SecurityContextHolder.clearContext();
         }
 
         filterChain.doFilter(request, response);
@@ -46,7 +46,7 @@ public class ApiKeyValidatorFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
         AntPathMatcher pathMatcher = new AntPathMatcher();
 
-        log.info("ApiKeyValidatorFilter path={} matches?={}", path, pathMatcher.match("/v3/api-docs/**", path));
+        log.debug("ApiKeyValidatorFilter path={} matches?={}", path, pathMatcher.match("/v3/api-docs/**", path));
         return pathMatcher.match("/v3/api-docs/**", path) || pathMatcher.match("/swagger-ui/**", path);
     }
 }
