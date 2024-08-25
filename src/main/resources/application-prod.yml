@@ -17,6 +17,13 @@ spring:
     password: ${DB_PASSWORD}
   tessdata: ${TESSDATA_PREFIX}
 
+logging:
+  level:
+    root: info
+    web: info
+    ai:
+      agreement:
+        AiProject: info
 cors:
   allowed-origin:
     dev: ${CORS_DEV}
