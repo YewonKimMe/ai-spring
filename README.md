@@ -8,7 +8,12 @@
 #### API 문서 주소:
     http://3.39.253.166:8080/swagger-ui/index.html
 #### 위 주소에서 API 테스트 가능 - 배포 완료 (2024-08-24)
-<img src="src/main/resources/static/api_test.png">
+![api_test](src/main/resources/static/api_test.png)
+
+### 테스트 사이트 내 출력 예시
+![example](src/main/resources/static/example.png)
+
+
 ---
 
 * 기능
