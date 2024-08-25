@@ -36,7 +36,7 @@ import java.util.concurrent.Executors;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "Chatbot endpoint", description = "챗봇 관련 기능")
+@Tag(name = "OCR / Chatbot", description = "OCR / 챗봇 관련 기능, 허용 이미지 확장자: jpg, png, jpeg")
 @RequestMapping(value = "/api/v1", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AiController {
 
@@ -46,29 +46,8 @@ public class AiController {
     private final OcrService ocrService;
 
     private final Assistant assistant;
-    // Assistant 로 프롬프트 이동
 
-//    final String requirement = "다음 계약서에 대한 평가를 수행해 주세요.\n" +
-//            "기준:\n" +
-//            "1. 기본 정보의 정확성 (20점 만점)\n" +
-//            "2. 법적 효력 (20점 만점)\n" +
-//            "3. 특약 사항의 완성도 (20점 만점)\n" +
-//            "4. 양측 권리와 의무의 명확성 (20점 만점)\n" +
-//            "5. 기타 중요한 조항 (20점 만점)\n" +
-//            "출력 방법 설명:"+
-//            "계약서 제목을 간단하게 언급하고, 임대인은(회사)는 누구인지 언급해주세요. 각 항목의 점수를 구체적으로 설명 및 제공해 주세요. 평가내용은 높임말을 사용합니다." +
-//            "응답 양식은 다음과 같습니다. 응답 양식을 철저하게 지켜주세요. AI가 생성한 응답은 {} 내에 위치하고, 중괄호'{}'는 출력하지 않습니다. 계약서 OCR 내용은 출력하지 않습니다." +
-//            "{계약서 제목}\n" +
-//            "{임대인 정보}\n" +
-//            "1. 기본 정보의 정확성 (20점 만점)\n{1항 평가내용}" +
-//            "2. 법적 효력 (20점 만점)\n{2항 평가내용}" +
-//            "3. 특약 사항의 완성도 (20점 만점)\n{3항 평가내용}" +
-//            "4. 양측 권리와 의무의 명확성 (20점 만점)\n{4항 평가내용}" +
-//            "5. 기타 중요한 조항 (20점 만점)\n{5항 평가내용}" +
-//            "총평: {총평 내용}\n" +
-//            "@{1항 평가 점수;2항 평가 점수;3항 평가 점수;4항 평가 점수;5항 평가 점수}";
-
-    @Operation(summary = "OCR 결과 확인 API", description = "OCR 테스트 API, 스트리밍을 지원하지 않기 때문에 수 초 내의 응답지연이 있을 수 있음")
+    @Operation(summary = "OCR 결과 확인 API", description = "OCR 테스트 API, 스트리밍을 지원하지 않기 때문에 수 초 내의 응답지연이 있을 수 있음<br>OCR Version: google-cloud-vision:3.46.0")
     @PostMapping(value = "/test/ocr-test", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResultAndData> getOcrText(@RequestPart(name = "images") List<MultipartFile> files) {
 
@@ -91,7 +70,7 @@ public class AiController {
 
     }
 
-    @Operation(summary = "계약서 이미지 OCR 후 응답", description = "gpt-4o, 이미지 ocr 처리 후 기반으로 정해진 양식에 따라 gpt 응답, 이미지 여러장 OCR 추출 가능<br>스트리밍 구현이 완료되지 않았기 때문에 10~20초의 응답지연이 있을 수 있음")
+    @Operation(summary = "계약서 이미지 OCR 후 응답", description = "gpt-4o, 이미지 ocr 처리 후 기반으로 정해진 양식에 따라 gpt 응답, 이미지 여러장 OCR 추출 가능<br>스트리밍 구현이 완료되지 않았기 때문에 업로드 분량에 따라 5~20초의 응답지연이 있을 수 있음<br>OCR Version: google-cloud-vision:3.46.0")
     @PostMapping(value = "/chat/agreement-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResultAndData> getOcrString(@RequestPart(name = "images") List<MultipartFile> files) {
 
