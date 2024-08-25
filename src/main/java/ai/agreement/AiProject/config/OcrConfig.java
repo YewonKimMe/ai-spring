@@ -1,5 +1,7 @@
-package ai.agreement.AiProject.service;
+package ai.agreement.AiProject.config;
 
+import ai.agreement.AiProject.service.GoogleVisionOcrService;
+import ai.agreement.AiProject.service.OcrService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
