@@ -1,5 +1,6 @@
 package ai.agreement.AiProject.config;
 
+import ai.agreement.AiProject.security.SecurityConst;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
@@ -14,7 +15,13 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
-                .info(apiInformation());
+                .components(new Components()
+                        .addSecuritySchemes("apiKeyAuth", new SecurityScheme()
+                                .type(SecurityScheme.Type.APIKEY)
+                                .in(SecurityScheme.In.HEADER)
+                                .name(SecurityConst.AUTH_HEADER)))
+                .info(apiInformation())
+                .addSecurityItem(new SecurityRequirement().addList("apiKeyAuth"));
     }
 
     private Info apiInformation() {
