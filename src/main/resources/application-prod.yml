@@ -16,3 +16,10 @@ spring:
     # DB PASSWORD
     password: ${DB_PASSWORD}
   tessdata: ${TESSDATA_PREFIX}
+
+cors:
+  allowed-origin:
+    dev: ${CORS_DEV}
+    prod: ${CORS_PROD}
+security:
+  api-key: ${SECURITY_API_KEY}
