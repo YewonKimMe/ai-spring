@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.util.List;
 
 @Slf4j
-@Service
 @Transactional
 @RequiredArgsConstructor
 public class Tess4jService implements OcrService {
