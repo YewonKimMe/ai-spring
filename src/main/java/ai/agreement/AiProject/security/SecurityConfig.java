@@ -11,6 +11,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
@@ -33,6 +35,8 @@ public class SecurityConfig {
     private String prodAllowedOrigin;
 
     private final ApiKeyValidatorFilter apiKeyValidatorFilter;
+
+    private final ApiAuthenticationEntryPoint apiAuthenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain defalutSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -65,7 +69,11 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/test/**").authenticated()
                         .requestMatchers("/api/v1/chat/**").authenticated()
                         .anyRequest().permitAll())
-                .addFilterBefore(apiKeyValidatorFilter, BasicAuthenticationFilter.class);
+                .exceptionHandling(exceptionHandlingConfig -> exceptionHandlingConfig
+                .authenticationEntryPoint(apiAuthenticationEntryPoint))
+                .addFilterBefore(apiKeyValidatorFilter, BasicAuthenticationFilter.class)
+                .httpBasic(httpSecurityHttpBasicConfigurer -> httpSecurityHttpBasicConfigurer
+                        .authenticationEntryPoint(apiAuthenticationEntryPoint));
         return httpSecurity.build();
     }
 
@@ -78,5 +86,10 @@ public class SecurityConfig {
                 .build();
 
         return new InMemoryUserDetailsManager(user);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
