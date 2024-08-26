@@ -14,17 +14,17 @@
 ---
 
 * 기능
-  * ⚙️ gen ai 기능은 프롬프트 기반, 현재는 추가 튜닝 X
+  * ### ⚙️ gen ai 기능은 프롬프트 기반, 현재는 추가 튜닝 X
     * 가능하다면 다른 튜닝 기술을 추가할 수도 있을듯
     * 응답 텍스트를 프롬프트로 일정하게 요청하긴 했으나, 이 부분은 수정이 필요함
     * 단순히 텍스트 기반으로 통째로 출력하는 것이 목적이라면 중요하진 않음
-  * ⚙️ 현재 추가된 기능
+  * ### ⚙️ 현재 추가된 기능
     * 단순 text 기반 계약서 분석 응답: gpt-3.5 turbo
     * 여러장 계약서 이미지 업로드, OCR 추출 후 분석 응답: gpt-4o-mini
-      * tessdata 기반 kor(한국어), osd(광학 문자 인식)
-      * 오픈소스여서 한국어 인식률이 조금 부족한 경향을 보임
-      * 중국어 번체(한자) 학습 데이터(chi_tra)를 추가하려고 했으나 한글로 쓰여진 한자어(e.g. 성명) 같은 것도 한문으로 번역하는 문제 발생, 따라서 중국어는 추가하지 않음
-
+      * ~~tessdata 기반 kor(한국어), osd(광학 문자 인식)~~
+      * ~~오픈소스여서 한국어 인식률이 조금 부족한 경향을 보임~~
+      * ~~중국어 번체(한자) 학습 데이터(chi_tra)를 추가하려고 했으나 한글로 쓰여진 한자어(e.g. 성명) 같은 것도 한문으로 번역하는 문제 발생, 따라서 중국어는 추가하지 않음~~
+    * ### GOOGLE Cloud Vision API 적용, 언어 관계 없이 구글 OCR이 처리 가능
 
 
 
@@ -51,6 +51,7 @@ split('@')[1] 으로 {점수 리스트} 획득 가능
 
 ---
 ### 의존성
+https://mvnrepository.com/artifact/com.google.cloud/google-cloud-vision/3.46.0 Google Cloud Vision
 https://mvnrepository.com/artifact/net.sourceforge.tess4j/tess4j/5.13.0 tess4j(ocr)
 https://mvnrepository.com/artifact/dev.langchain4j/langchain4j langchain4j
 https://mvnrepository.com/artifact/dev.langchain4j/langchain4j-open-ai langchain4j-openai
