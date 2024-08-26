@@ -1,9 +1,12 @@
 # GenAI 기반 계약서 인식·평가 서비스 / ART 해커톤 2팀
 
 ## Google Vision OCR 이용
-#### API 문서 주소: (http)
+### API 문서 주소: (http)
     http://3.39.253.166:8080/swagger-ui/index.html
 #### 위 주소에서 API 테스트 가능 - 배포 완료 (2024-08-24)
+
+### 프론트용 request endpoint
+    https://3.39.253.166.nip.io
 #### GOOGLE OCR 적용 (2024-08-26)
 ![api_test](src/main/resources/static/api_test.png)
 
