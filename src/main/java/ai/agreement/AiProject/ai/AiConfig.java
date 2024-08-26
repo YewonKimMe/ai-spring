@@ -1,5 +1,7 @@
 package ai.agreement.AiProject.ai;
 
+import ai.agreement.AiProject.service.GenAIService;
+import ai.agreement.AiProject.service.OpenAiContractCheckService;
 import dev.ai4j.openai4j.embedding.EmbeddingModel;
 import dev.langchain4j.data.segment.TextSegment;
 import dev.langchain4j.memory.ChatMemory;
@@ -37,5 +39,10 @@ public class AiConfig {
                         .build())
                 .chatMemory(chatMemory)
                 .build();
+    }
+
+    @Bean
+    public GenAIService genAIService() {
+        return new OpenAiContractCheckService(assistant());
     }
 }
