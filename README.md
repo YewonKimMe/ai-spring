@@ -1,5 +1,3 @@
-<img src="src/main/resources/static/openai.png" width="120" height="30" style="margin-right: 50px;"><img src="src/main/resources/static/aws.png" width="45" height="28">
-
 # GenAI 기반 계약서 인식·평가 서비스 / ART 해커톤 2팀
 
 ## Google Vision OCR 이용
