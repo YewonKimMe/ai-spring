@@ -4,6 +4,8 @@ import ai.agreement.AiProject.ai.Assistant;
 import ai.agreement.AiProject.dto.DefaultChatMessage;
 import ai.agreement.AiProject.dto.response.ResultAndData;
 import ai.agreement.AiProject.dto.response.SuccessAndData;
+import ai.agreement.AiProject.exception.IllegalContractTypeException;
+import ai.agreement.AiProject.service.GenAIService;
 import ai.agreement.AiProject.service.OcrService;
 import dev.langchain4j.data.message.AiMessage;
 import dev.langchain4j.memory.ChatMemory;
@@ -20,6 +22,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.CacheControl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +35,7 @@ import reactor.core.publisher.Sinks;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RestController
@@ -45,7 +49,7 @@ public class AiController {
 
     private final OcrService ocrService;
 
-    private final Assistant assistant;
+    private final GenAIService genAIService;
 
     @Operation(summary = "OCR 결과 확인 API", description = "OCR 테스트 API, 스트리밍을 지원하지 않기 때문에 수 초 내의 응답지연이 있을 수 있음<br>OCR Version: google-cloud-vision:3.46.0")
     @PostMapping(value = "/test/ocr-test", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -55,6 +59,7 @@ public class AiController {
 
         return ResponseEntity.
                 ok()
+                .cacheControl(CacheControl.maxAge(3, TimeUnit.SECONDS))
                 .body(new SuccessAndData(HttpStatus.OK.getReasonPhrase(), OcrAgreementText));
     }
 
@@ -62,10 +67,13 @@ public class AiController {
     @PostMapping("/chat")
     public ResponseEntity<ResultAndData> getDefaultChat(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "텍스트 계약서") @RequestBody DefaultChatMessage defaultChatMessage) {
 
-        String generatedMessage = assistant.chat("계약서 내용: "+defaultChatMessage.getMessage());
+        String generatedMessage = genAIService.createChatRequest(defaultChatMessage.getMessage());
+
         log.debug("gen message={}", generatedMessage);
+
         return ResponseEntity
                 .ok()
+                .cacheControl(CacheControl.maxAge(3, TimeUnit.SECONDS))
                 .body(new SuccessAndData(HttpStatus.OK.getReasonPhrase(), generatedMessage));
 
     }
@@ -74,26 +82,14 @@ public class AiController {
     @PostMapping(value = "/chat/agreement-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ResultAndData> getOcrString(@RequestPart(name = "images") List<MultipartFile> files) {
 
-        String OcrAgreementText = ocrService.doImagesOcr(files);
+        String ocrContractText = ocrService.doImagesOcr(files);
 
-        String generatedMessage = assistant.chat("계약서 OCR 내용: " + OcrAgreementText);
+        String generatedMessage = genAIService.createChatRequest(ocrContractText);
 
         return ResponseEntity.
                 ok()
+                .cacheControl(CacheControl.maxAge(3, TimeUnit.SECONDS))
                 .body(new SuccessAndData(HttpStatus.OK.getReasonPhrase(), generatedMessage));
-    }
-
-    private Assistant setAssistant(String modelName) {
-        ChatMemory chatMemory = MessageWindowChatMemory.withMaxMessages(10);
-
-        return AiServices.builder(Assistant.class)
-                .chatLanguageModel(OpenAiChatModel.builder()
-                        .apiKey(apiKey)
-                        .modelName(modelName)
-                        .temperature(0.01)
-                        .build())
-                .chatMemory(chatMemory)
-                .build();
     }
 
 //    @GetMapping("/streaming")
