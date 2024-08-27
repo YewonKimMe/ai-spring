@@ -1,5 +1,6 @@
 package ai.agreement.AiProject.service;
 
+import ai.agreement.AiProject.enums.ErrorMessage;
 import ai.agreement.AiProject.ai.Assistant;
 import ai.agreement.AiProject.exception.IllegalContractTypeException;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class OpenAiContractCheckService implements GenAIService {
         String response = assistant.chat(prefix + message);
 
         if (response.equals("-1")) {
-            throw new IllegalContractTypeException("계약서 양식이 아닙니다.");
+            throw new IllegalContractTypeException(ErrorMessage.NOT_CONTRACT.getErrorMessage());
         }
 
         return response;
