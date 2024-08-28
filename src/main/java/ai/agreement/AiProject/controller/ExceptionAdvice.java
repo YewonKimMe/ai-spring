@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 public class ExceptionAdvice {
 
     @ExceptionHandler({IllegalExtensionException.class, IllegalContractTypeException.class, TextNotFoundException.class})
-    public ResponseEntity<ResultAndData> illegalExtensionException(IllegalExtensionException e) {
+    public ResponseEntity<ResultAndData> checkDefinedException(Exception e) {
 
         log.debug("exception={}", e.getMessage());
 
