@@ -18,6 +18,7 @@ import dev.langchain4j.model.output.Response;
 import dev.langchain4j.service.AiServices;
 import dev.langchain4j.service.TokenStream;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -79,18 +80,31 @@ public class AiController {
     }
 
     @Operation(summary = "계약서 이미지 OCR 후 응답", description = "gpt-4o, 이미지 ocr 처리 후 기반으로 정해진 양식에 따라 gpt 응답, 이미지 여러장 OCR 추출 가능<br>스트리밍 구현이 완료되지 않았기 때문에 업로드 분량에 따라 5~20초의 응답지연이 있을 수 있음<br>OCR Version: google-cloud-vision:3.46.0")
-    @PostMapping(value = "/chat/agreement-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ResultAndData> getOcrString(@RequestPart(name = "images") List<MultipartFile> files) {
-
+    @PostMapping(value = "/chat/agreement-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResultAndData> getOcrString(@RequestPart(name = "images") List<MultipartFile> files,
+                                                      @Parameter(name = "isStructured", description = "0: 일반 String 응답, 1: 분석 JSON 응답") @RequestParam(name = "isStructured", defaultValue = "0") Integer isStructured) {
+        if (!(isStructured == 0 || isStructured == 1)) {
+            throw new IllegalArgumentException("올바르지 않은 요청 파라미터");
+        }
         String ocrContractText = ocrService.doImagesOcr(files);
 
-        String generatedMessage = genAIService.createChatRequest(ocrContractText);
+        Object result;
+
+        if (isStructured == 0) {
+            result = genAIService.createChatRequest(ocrContractText);
+        } else {
+            result = genAIService.createAnalysisResult(ocrContractText);
+        }
+
+        log.debug("result={}", result);
 
         return ResponseEntity.
                 ok()
                 .cacheControl(CacheControl.maxAge(3, TimeUnit.SECONDS))
-                .body(new SuccessAndData<>(HttpStatus.OK.getReasonPhrase(), generatedMessage));
+                .body(new SuccessAndData<>(HttpStatus.OK.getReasonPhrase(), result));
     }
+
+
 
 //    @GetMapping("/streaming")
 //    public Flux<String> getMessageStreamingResult(@RequestBody DefaultChatMessage defaultChatMessage) {
