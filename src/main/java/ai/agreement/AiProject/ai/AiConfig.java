@@ -42,7 +42,23 @@ public class AiConfig {
     }
 
     @Bean
+    public StructuredContractAnalysisGenerator structuredGenerator() {
+        ChatMemory chatMemory = MessageWindowChatMemory.withMaxMessages(10);
+
+        return AiServices.builder(StructuredContractAnalysisGenerator.class)
+                .chatLanguageModel(OpenAiChatModel.builder()
+                        .apiKey(apiKey)
+                        .modelName(modelName)
+                        .temperature(0.01)
+                        .responseFormat("json_object")
+                        .build())
+                .chatMemory(chatMemory)
+                .build();
+    }
+
+
+    @Bean
     public GenAIService genAIService() {
-        return new OpenAiContractCheckService(assistant());
+        return new OpenAiContractCheckService(assistant(), structuredGenerator());
     }
 }
