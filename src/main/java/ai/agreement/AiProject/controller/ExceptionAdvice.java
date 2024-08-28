@@ -21,12 +21,16 @@ import java.util.concurrent.TimeUnit;
 @RestControllerAdvice
 public class ExceptionAdvice {
 
-    @ExceptionHandler({IllegalExtensionException.class, IllegalContractTypeException.class, TextNotFoundException.class})
+    @ExceptionHandler({
+            IllegalExtensionException.class,
+            IllegalContractTypeException.class,
+            TextNotFoundException.class
+    })
     public ResponseEntity<ResultAndData> checkDefinedException(Exception e) {
 
         log.debug("exception={}", e.getMessage());
 
-        ResultAndData errorResultAndMessage = new FailAndData(HttpStatus.BAD_REQUEST.getReasonPhrase(), e.getMessage());
+        ResultAndData errorResultAndMessage = new FailAndData<>(HttpStatus.BAD_REQUEST.getReasonPhrase(), e.getMessage());
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)

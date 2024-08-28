@@ -5,9 +5,9 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class SuccessAndData implements ResultAndData {
+public class SuccessAndData<T> implements ResultAndData {
 
     private String httpMessage;
 
-    private Object data;
+    private T data;
 }

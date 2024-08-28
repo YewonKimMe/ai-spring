@@ -60,7 +60,7 @@ public class AiController {
         return ResponseEntity.
                 ok()
                 .cacheControl(CacheControl.maxAge(3, TimeUnit.SECONDS))
-                .body(new SuccessAndData(HttpStatus.OK.getReasonPhrase(), OcrAgreementText));
+                .body(new SuccessAndData<>(HttpStatus.OK.getReasonPhrase(), OcrAgreementText));
     }
 
     @Operation(summary = "단순 텍스트 기반 계약서에 대한 GenAI 분석", description = "gpt-3.5, text input에 대한 gpt 응답<br>스트리밍 구현이 완료되지 않았기 때문에 10~20초의 응답지연이 있을 수 있음")
@@ -74,7 +74,7 @@ public class AiController {
         return ResponseEntity
                 .ok()
                 .cacheControl(CacheControl.maxAge(3, TimeUnit.SECONDS))
-                .body(new SuccessAndData(HttpStatus.OK.getReasonPhrase(), generatedMessage));
+                .body(new SuccessAndData<>(HttpStatus.OK.getReasonPhrase(), generatedMessage));
 
     }
 
@@ -89,7 +89,7 @@ public class AiController {
         return ResponseEntity.
                 ok()
                 .cacheControl(CacheControl.maxAge(3, TimeUnit.SECONDS))
-                .body(new SuccessAndData(HttpStatus.OK.getReasonPhrase(), generatedMessage));
+                .body(new SuccessAndData<>(HttpStatus.OK.getReasonPhrase(), generatedMessage));
     }
 
 //    @GetMapping("/streaming")
