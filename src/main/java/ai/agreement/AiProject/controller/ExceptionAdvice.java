@@ -21,35 +21,16 @@ import java.util.concurrent.TimeUnit;
 @RestControllerAdvice
 public class ExceptionAdvice {
 
-    @ExceptionHandler(IllegalExtensionException.class)
+    @ExceptionHandler({IllegalExtensionException.class, IllegalContractTypeException.class, TextNotFoundException.class})
     public ResponseEntity<ResultAndData> illegalExtensionException(IllegalExtensionException e) {
-        log.debug("IllegalExtensionException={}", e.getMessage());
-        ResultAndData errorResultAndMessage = new FailAndData(HttpStatus.BAD_REQUEST.getReasonPhrase(), e.getMessage());
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(errorResultAndMessage);
-    }
 
-    @ExceptionHandler(IllegalContractTypeException.class)
-    public ResponseEntity<ResultAndData> illegalContractTypeException(IllegalContractTypeException e) {
-        log.debug("IllegalExtensionException={}", e.getMessage());
-        ResultAndData errorResultAndMessage = new FailAndData(HttpStatus.BAD_REQUEST.getReasonPhrase(), e.getMessage());
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .contentType(MediaType.APPLICATION_JSON)
-                .cacheControl(CacheControl.maxAge(3, TimeUnit.SECONDS))
-                .body(errorResultAndMessage);
-    }
+        log.debug("exception={}", e.getMessage());
 
-    @ExceptionHandler(TextNotFoundException.class)
-    public ResponseEntity<ResultAndData> textNotFoundException(TextNotFoundException e) {
-        log.debug("IllegalExtensionException={}", e.getMessage());
         ResultAndData errorResultAndMessage = new FailAndData(HttpStatus.BAD_REQUEST.getReasonPhrase(), e.getMessage());
+
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
-                .cacheControl(CacheControl.maxAge(3, TimeUnit.SECONDS))
                 .body(errorResultAndMessage);
     }
 }
