@@ -15,7 +15,9 @@
 ### 테스트 사이트 내 출력 예시
 ![example](src/main/resources/static/example.png)
 
-
+### 테스트 사이트 내 출력 예시 - 구조화 응답 적용
+![example](src/main/resources/static/test1.png)
+![example](src/main/resources/static/test2.png)
 ---
 
 * 기능
