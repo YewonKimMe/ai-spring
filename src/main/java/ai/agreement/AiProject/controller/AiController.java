@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "OCR / Chatbot", description = "OCR / 챗봇 관련 기능, 허용 이미지 확장자: jpg, png, jpeg")
+@Tag(name = "OCR / Chatbot", description = "OCR / 챗봇 관련 기능, 허용 이미지 확장자: jpg, png, jpeg, 인증 필요 엔드포인트")
 @RequestMapping(value = "/api/v1", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AiController {
 
@@ -68,7 +68,7 @@ public class AiController {
     }
 
     @Operation(summary = "계약서 이미지 OCR 후 응답", description = "gpt-4o, 이미지 ocr 처리 후 기반으로 정해진 양식에 따라 gpt 응답, 이미지 여러장 OCR 추출 가능<br>스트리밍 구현이 완료되지 않았기 때문에 업로드 분량에 따라 5~20초의 응답지연이 있을 수 있음<br>OCR Version: google-cloud-vision:3.46.0")
-    @PostMapping(value = "/chat/agreement-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/chat/agreement-images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultAndData> getOcrString(@RequestPart(name = "images") List<MultipartFile> files,
                                                       @Parameter(name = "isStructured", description = "응답 양식 구분 파라미터<br>0: 일반 String 응답, 1: 분석 JSON 응답<br>기본값 = 1") @RequestParam(name = "isStructured", defaultValue = "1") Integer isStructured) {
 
