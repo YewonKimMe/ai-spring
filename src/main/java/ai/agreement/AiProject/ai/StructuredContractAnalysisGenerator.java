@@ -1,6 +1,6 @@
 package ai.agreement.AiProject.ai;
 
-import ai.agreement.AiProject.ai.structed.output.ContractAnalysisResult;
+import ai.agreement.AiProject.ai.result.structed.ContractAnalysisResult;
 import dev.langchain4j.service.SystemMessage;
 import dev.langchain4j.service.UserMessage;
 import dev.langchain4j.service.V;
@@ -11,7 +11,7 @@ public interface StructuredContractAnalysisGenerator {
         "부동산 계약서를 주어진 '기준' 에 따라 분석하고, ContractAnalysisResult 에 매핑하여 반환합니다."
     })
 
-    @UserMessage("다음 계약서에 대한 분석과 평가를 다음 기준에 따라 상세하게 수행 후, ContractAnalysisResult 형식에 맞게 반환해 주세요. 분석 및 평가는 주어진 계약서를 기반으로 이루어지며, 분석 근거를 제시해야 합니다.\n평가 기준은 다음과 같습니다." +
+    @UserMessage("다음 계약서에 대한 분석과 평가를 다음 기준에 따라 수행 후, ContractAnalysisResult 형식에 맞게 반환해 주세요. 분석 및 평가는 주어진 계약서를 기반으로 이루어지며, 계약서 내의 요소를 기반으로 분석 근거를 제시해야 합니다.\n평가 기준은 다음과 같습니다." +
             "기준:\n" +
             "1. 기본 정보의 정확성 (20점 만점)\n" +
             "2. 법적 효력 (20점 만점)\n" +

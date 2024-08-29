@@ -1,7 +1,7 @@
 package ai.agreement.AiProject.service;
 
 import ai.agreement.AiProject.ai.StructuredContractAnalysisGenerator;
-import ai.agreement.AiProject.ai.structed.output.ContractAnalysisResult;
+import ai.agreement.AiProject.ai.result.structed.ContractAnalysisResult;
 import ai.agreement.AiProject.enums.ErrorMessage;
 import ai.agreement.AiProject.ai.Assistant;
 import ai.agreement.AiProject.exception.IllegalContractTypeException;

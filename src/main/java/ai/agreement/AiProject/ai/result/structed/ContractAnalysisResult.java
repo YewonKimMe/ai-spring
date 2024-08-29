@@ -1,5 +1,6 @@
-package ai.agreement.AiProject.ai.structed.output;
+package ai.agreement.AiProject.ai.result.structed;
 
+import ai.agreement.AiProject.ai.result.Result;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -9,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-public class ContractAnalysisResult {
+public class ContractAnalysisResult implements Result {
 
     private String contractName;
 

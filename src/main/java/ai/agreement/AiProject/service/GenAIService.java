@@ -1,7 +1,6 @@
 package ai.agreement.AiProject.service;
 
-import ai.agreement.AiProject.ai.StructuredContractAnalysisGenerator;
-import ai.agreement.AiProject.ai.structed.output.ContractAnalysisResult;
+import ai.agreement.AiProject.ai.result.structed.ContractAnalysisResult;
 
 public interface GenAIService {
 
