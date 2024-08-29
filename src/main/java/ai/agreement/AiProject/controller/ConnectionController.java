@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@Tag(name = "연결 확인", description = "최초 접속 시 암호화 된 요청용 api-key 발급 용도(운영용)")
+@Tag(name = "연결 확인", description = "최초 접속 시 요청용 jwt 발급 용도(운영용)")
 @RequestMapping(value = "/api/v1/connection", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ConnectionController {
 
@@ -29,7 +29,7 @@ public class ConnectionController {
     @Value("${security.is-test:true}")
     private boolean isTestMode;
 
-    @Operation(summary = "인증키 발급", description = "최초 접속 시 요청용 인증키 발급<br>테스트 모드에서는 API KEY 를 암호화한 인증키 제공<br>테스트 모드가 아닐경우 JWT 생성 후 제공")
+    @Operation(summary = "인증키 발급", description = "최초 접속 시 브라우저용 인증키 발급<br>테스트 모드에서는 API KEY 를 암호화한 인증키 제공<br>테스트 모드가 아닐경우 JWT Token 생성 후 응답 헤더로 제공, 프론트에서 쿠키로 저장 후 POST 요청 시마다 요청 Authorization 헤더에 포함<br>테스트모드: false")
     @GetMapping
     public ResultAndData getHashedApiKey() {
         if (isTestMode) {
