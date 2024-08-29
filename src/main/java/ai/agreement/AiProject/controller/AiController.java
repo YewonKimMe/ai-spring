@@ -1,22 +1,13 @@
 package ai.agreement.AiProject.controller;
 
-import ai.agreement.AiProject.ai.Assistant;
 import ai.agreement.AiProject.dto.DefaultChatMessage;
 import ai.agreement.AiProject.dto.response.ResultAndData;
 import ai.agreement.AiProject.dto.response.SuccessAndData;
-import ai.agreement.AiProject.exception.IllegalContractTypeException;
+import ai.agreement.AiProject.ai.result.Result;
+import ai.agreement.AiProject.enums.IntParam;
+import ai.agreement.AiProject.service.ContractService;
 import ai.agreement.AiProject.service.GenAIService;
 import ai.agreement.AiProject.service.OcrService;
-import dev.langchain4j.data.message.AiMessage;
-import dev.langchain4j.memory.ChatMemory;
-import dev.langchain4j.memory.chat.MessageWindowChatMemory;
-import dev.langchain4j.model.StreamingResponseHandler;
-import dev.langchain4j.model.chat.StreamingChatLanguageModel;
-import dev.langchain4j.model.openai.OpenAiChatModel;
-import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
-import dev.langchain4j.model.output.Response;
-import dev.langchain4j.service.AiServices;
-import dev.langchain4j.service.TokenStream;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,13 +20,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Sinks;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -51,6 +37,8 @@ public class AiController {
     private final OcrService ocrService;
 
     private final GenAIService genAIService;
+
+    private final ContractService contractService;
 
     @Operation(summary = "OCR 결과 확인 API", description = "OCR 테스트 API, 스트리밍을 지원하지 않기 때문에 수 초 내의 응답지연이 있을 수 있음<br>OCR Version: google-cloud-vision:3.46.0")
     @PostMapping(value = "/test/ocr-test", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -82,26 +70,19 @@ public class AiController {
     @Operation(summary = "계약서 이미지 OCR 후 응답", description = "gpt-4o, 이미지 ocr 처리 후 기반으로 정해진 양식에 따라 gpt 응답, 이미지 여러장 OCR 추출 가능<br>스트리밍 구현이 완료되지 않았기 때문에 업로드 분량에 따라 5~20초의 응답지연이 있을 수 있음<br>OCR Version: google-cloud-vision:3.46.0")
     @PostMapping(value = "/chat/agreement-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultAndData> getOcrString(@RequestPart(name = "images") List<MultipartFile> files,
-                                                      @Parameter(name = "isStructured", description = "0: 일반 String 응답, 1: 분석 JSON 응답") @RequestParam(name = "isStructured", defaultValue = "0") Integer isStructured) {
-        if (!(isStructured == 0 || isStructured == 1)) {
-            throw new IllegalArgumentException("올바르지 않은 요청 파라미터");
-        }
-        String ocrContractText = ocrService.doImagesOcr(files);
+                                                      @Parameter(name = "isStructured", description = "응답 양식 구분 파라미터<br>0: 일반 String 응답, 1: 분석 JSON 응답<br>기본값 = 1") @RequestParam(name = "isStructured", defaultValue = "1") Integer isStructured) {
 
-        Object result;
+        IntParam code = IntParam.fromValue(isStructured); // queryParam 검증
 
-        if (isStructured == 0) {
-            result = genAIService.createChatRequest(ocrContractText);
-        } else {
-            result = genAIService.createAnalysisResult(ocrContractText);
-        }
+        // code 타입에 따라 응답 방식 결정
+        Result analysisResults = contractService.contractCheckProcess(code, files); // 계약서 ocr 추출 및 분석 수행
 
-        log.debug("result={}", result);
+        log.debug("analysisResults={}", analysisResults);
 
         return ResponseEntity.
                 ok()
                 .cacheControl(CacheControl.maxAge(3, TimeUnit.SECONDS))
-                .body(new SuccessAndData<>(HttpStatus.OK.getReasonPhrase(), result));
+                .body(new SuccessAndData<>(HttpStatus.OK.getReasonPhrase(), analysisResults));
     }
 
 
