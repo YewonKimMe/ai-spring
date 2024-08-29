@@ -34,9 +34,9 @@ public class SecurityConfig {
     @Value("${cors.allowed-origin.prod}")
     private String prodAllowedOrigin;
 
-    private final ApiKeyValidatorFilter apiKeyValidatorFilter;
-
     private final ApiAuthenticationEntryPoint apiAuthenticationEntryPoint;
+
+    private final ApiKeyValidatorFilter apiKeyValidatorFilter;
 
     @Bean
     public SecurityFilterChain defalutSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
