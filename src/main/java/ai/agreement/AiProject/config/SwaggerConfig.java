@@ -27,7 +27,7 @@ public class SwaggerConfig {
     private Info apiInformation() {
         return new Info()
                 .title("OCR 기반 계약서 평가 AI")
-                .description("prompt 기반의 계약서 이미지 ocr 추출 후 평가<br><br>API 문서: Authorize 에 API KEY 입력<br><br>프론트 앱: Http 요청 시 Authorization 헤더에 API KEY 포함<br><br>OCR Version: google-cloud-vision:3.46.0")
+                .description("<h2>프롬프트 기반의 계약서 이미지 OCR 추출 후 생성형 인공지능 평가</h2><br>API KEY<br>1. 개발용 API KEY<br>2. 브라우저용 JWT (/api/v1/connection 으로 발급)<br><br>API 문서: Authorize 에 API KEY(or JWT) 입력<br><br>프론트 앱: HTTP 요청 시 Authorization 헤더에 JWT 포함<br><br>OCR Version: google-cloud-vision:3.46.0")
                 .version("1.0.0");
     }
 }
