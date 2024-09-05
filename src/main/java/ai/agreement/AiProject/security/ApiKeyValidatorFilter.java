@@ -68,7 +68,7 @@ public class ApiKeyValidatorFilter extends OncePerRequestFilter {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception e) {
-            log.error("Unauthorized API key={}", apiKey);
+            log.error("Unauthorized API key={}, path={}", apiKey, request.getServletPath());
             request.setAttribute("exception", new BadCredentialsException("유효하지 않은 인증 정보(API KEY) 입니다."));
             SecurityContextHolder.clearContext();
         }
